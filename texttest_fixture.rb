@@ -21,8 +21,7 @@ items = [
   initialize_item_as(ConcertPass, "Backstage passes to a TAFKAL80ETC concert", 15, 20),
   initialize_item_as(ConcertPass, "Backstage passes to a TAFKAL80ETC concert", 10, 49),
   initialize_item_as(ConcertPass, "Backstage passes to a TAFKAL80ETC concert", 5, 49),
-  # This Conjured item does not work properly yet
-  # initialize_item_as(, { name: "Conjured Mana Cake", sell_in: 3, quality: 6), # <-- :O
+  initialize_item_as(Conjured, "Conjured Mana Cake", 3, 6)
 ]
 
 days = 2
