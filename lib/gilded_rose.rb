@@ -1,3 +1,5 @@
+Dir[File.join(__dir__, '*.rb')].each { |file| require file }
+
 class GildedRose
   def initialize(items)
     @items = items
@@ -5,28 +7,22 @@ class GildedRose
 
   def update_quality
     @items.each do |item|
-      next if sulfuras?(item)
-      if aged_brie?(item)
-        item.sell_in -= 1
-        item.quality += 1 unless item.quality >= 50
+      if sulfuras?(item)
+        product = Sulfuras.new(item.sell_in, item.quality)
+        product.update
+        update_item(item, product)
+      elsif aged_brie?(item)
+        product = AgedBrie.new(item.sell_in, item.quality)
+        product.update
+        update_item(item, product)
       elsif backstage_pass?(item)
-        item.sell_in -= 1
-        item.quality += 1 unless item.quality >= 50
-        if item.sell_in < 10
-          item.quality += 1 unless item.quality >= 50
-        end
-        if item.sell_in < 5
-          item.quality += 1 unless item.quality >= 50
-        end
-        if item.sell_in < 0
-          item.quality = 0
-        end
+        product = ConcertPass.new(item.sell_in, item.quality)
+        product.update
+        update_item(item, product)
       elsif generic?(item)
-        item.sell_in -= 1
-        item.quality -= 1 if item.quality > 0
-        if item.sell_in < 0
-          item.quality -= 1 if item.quality > 0
-        end
+        product = Generic.new(item.sell_in, item.quality)
+        product.update
+        update_item(item, product)
       end
     end
   end
@@ -47,6 +43,11 @@ class GildedRose
 
   def generic?(item)
     !(sulfuras?(item) || backstage_pass?(item) || aged_brie?(item))
+  end
+
+  def update_item(item, product)
+    item.sell_in = product.sell_in
+    item.quality = product.quality
   end
 end
 
